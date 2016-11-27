@@ -529,7 +529,7 @@ Blockly.Blocks['logic_ternary'] = {
   }
 };
 
-Blockly.Blocks['robControls_ifElse'] = {
+Blockly.Blocks['unityControls_ifElse'] = {
   /**
    * Block for if/elseif/else condition. Roberta version.
    * @this Blockly.Block
@@ -623,7 +623,7 @@ Blockly.Blocks['robControls_ifElse'] = {
   }
 };
 
-Blockly.Blocks['robControls_if'] = {
+Blockly.Blocks['unityControls_if'] = {
   /**
    * Block for if/elseif condition. Roberta version.
    * @this Blockly.Block

@@ -685,7 +685,7 @@ Blockly.Blocks['text_prompt'] = {
   domToMutation: Blockly.Blocks['text_prompt_ext'].domToMutation
 };
 
-Blockly.Blocks['robText_join'] = {
+Blockly.Blocks['unityText_join'] = {
   /**
    * Block for creating a string made up of any number of elements of any
    * type.
@@ -754,7 +754,7 @@ Blockly.Blocks['robText_join'] = {
   }
 };
 
-Blockly.Blocks['robText_append'] = {
+Blockly.Blocks['unityText_append'] = {
   /**
    * Block for appending to a variable in place.
    * @this Blockly.Block

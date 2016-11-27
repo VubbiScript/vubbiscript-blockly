@@ -81,9 +81,9 @@ Blockly.HSV_VALUE = 0.65;
  */
 Blockly.CAT_LOGIC_RGB = "#33B8CA";
 /**
- * The rgb value for block colours in colour category.
+ * The rgb value for block colours in vector3 category.
  */
-Blockly.CAT_COLOUR_RGB = "#EBC300";
+Blockly.CAT_VECTOR3_RGB = "#EBC300";
 /**
  * The rgb value for block colours in lists category.
  */
@@ -99,11 +99,11 @@ Blockly.CAT_PROCEDURE_RGB = "#179C7D";
 /**
  * The rgb value for block colours in actions category.
  */
-Blockly.CAT_ACTION_RGB = "#F29400";
+Blockly.CAT_ACTION_RGB = "#F29400";// JEPE: Available color!
 /**
  * The rgb value for block colours in activity category.
  */
-Blockly.CAT_ACTIVITY_RGB = "#E2001A";
+Blockly.CAT_ACTIVITY_RGB = "#E2001A";// JEPE: Available color!
 /**
  * The rgb value for block colours in controls category.
  */
@@ -112,6 +112,7 @@ Blockly.CAT_CONTROL_RGB = "#EB6A0A";
  * The rgb value for block colours in sensors category.
  */
 Blockly.CAT_SENSOR_RGB = "#8FA402";
+Blockly.CAT_UNITY_RGB = "#8FA402";
 /**
  * The rgb value for block colours in text category.
  */
@@ -123,7 +124,7 @@ Blockly.CAT_VARIABLE_RGB = "#9085BA";
 /**
  * The rgb value for block colours in communication category.
  */
-Blockly.CAT_COMMUNICATION_RGB = "#FF69B4";
+Blockly.CAT_COMMUNICATION_RGB = "#FF69B4";// JEPE: Available color!
 
 /**
  * Lookup table for icon - categories.
@@ -230,15 +231,12 @@ Blockly.DATA_TYPE = [];
 Blockly.DATA_TYPE['Number'] = "#005A94";
 Blockly.DATA_TYPE['String'] = "#BACC1E";
 Blockly.DATA_TYPE['Boolean'] = "#33B8CA";
-Blockly.DATA_TYPE['Colour'] = "#EBC300";
-Blockly.DATA_TYPE['Connection'] = "#FF69B4";
-Blockly.DATA_TYPE['Sensor'] = "#8FA402";
-Blockly.DATA_TYPE['Actor'] = "#F29400";
-Blockly.DATA_TYPE['Array_Number'] = "#39378B";
-Blockly.DATA_TYPE['Array_String'] = "#39378B";
-Blockly.DATA_TYPE['Array_Boolean'] = "#39378B";
-Blockly.DATA_TYPE['Array_Colour'] = "#39378B";
-Blockly.DATA_TYPE['Array_Connection'] = "#39378B";
+Blockly.DATA_TYPE['Sprite'] = "#FF69B4";
+Blockly.DATA_TYPE['GameObject'] = "#8FA402";
+Blockly.DATA_TYPE['Vector3'] = "#EBC300";
+//Blockly.DATA_TYPE['Actor'] = "#F29400";
+Blockly.DATA_TYPE['List_Number'] = "#39378B";
+Blockly.DATA_TYPE['List_String'] = "#39378B";
 
 /**
  * Currently selected block.

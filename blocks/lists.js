@@ -709,7 +709,7 @@ Blockly.Blocks['lists_split'] = {
   }
 };
 
-Blockly.Blocks['robLists_create_with'] = {
+Blockly.Blocks['unityLists_create_with'] = {
   /**
    * Block for creating a list with any number of elements of any type.
    * @this Blockly.Block
@@ -718,10 +718,9 @@ Blockly.Blocks['robLists_create_with'] = {
     this.setColour(Blockly.CAT_LIST_RGB);
     var listType = new Blockly.FieldDropdown([
       [Blockly.Msg.VARIABLES_TYPE_NUMBER, 'Number'],
-      [Blockly.Msg.VARIABLES_TYPE_BOOLEAN, 'Boolean'],
+      //[Blockly.Msg.VARIABLES_TYPE_BOOLEAN, 'Boolean'],
       [Blockly.Msg.VARIABLES_TYPE_STRING, 'String'],
-      [Blockly.Msg.VARIABLES_TYPE_COLOUR, 'Colour'],
-      [Blockly.Msg.VARIABLES_TYPE_CONNECTION, 'Connection' ],
+      //[Blockly.Msg.VARIABLES_TYPE_CONNECTION, 'Connection' ],
     ],
     function(option) {
       this.sourceBlock_.updateType_(option);
@@ -735,7 +734,7 @@ Blockly.Blocks['robLists_create_with'] = {
     this.setInputsInline(false);
     this.appendValueInput('ADD1').setCheck('Number');
     this.appendValueInput('ADD2').setCheck('Number');
-    this.setOutput(true, 'Array_Number');
+    this.setOutput(true, 'List_Number');
     this.setMutatorPlus(new Blockly.MutatorPlus(this));
     this.setMutatorMinus(new Blockly.MutatorMinus(this));
     this.setTooltip(Blockly.Msg.LISTS_CREATE_WITH_TOOLTIP);
@@ -766,10 +765,9 @@ Blockly.Blocks['robLists_create_with'] = {
     this.listType_ = xmlElement.getAttribute('list_type');
     var listType = new Blockly.FieldDropdown([
       [Blockly.Msg.VARIABLES_TYPE_NUMBER, 'Number'],
-      [Blockly.Msg.VARIABLES_TYPE_BOOLEAN, 'Boolean'],
+      //[Blockly.Msg.VARIABLES_TYPE_BOOLEAN, 'Boolean'],
       [Blockly.Msg.VARIABLES_TYPE_STRING, 'String'],
-      [Blockly.Msg.VARIABLES_TYPE_COLOUR, 'Colour'],
-      [Blockly.Msg.VARIABLES_TYPE_CONNECTION, 'Connection' ],
+      //[Blockly.Msg.VARIABLES_TYPE_CONNECTION, 'Connection' ],
     ],
     function(option) {
       this.sourceBlock_.updateType_(option);
@@ -795,7 +793,7 @@ Blockly.Blocks['robLists_create_with'] = {
     } else {
       this.setMutatorMinus(new Blockly.MutatorMinus(this));
     }
-    this.changeOutput('Array_' + this.listType_);
+    this.changeOutput('List_' + this.listType_);
   },
 
   /**
@@ -806,10 +804,9 @@ Blockly.Blocks['robLists_create_with'] = {
   updateShape_: function(num) {
    var listType = new Blockly.FieldDropdown([
       [Blockly.Msg.VARIABLES_TYPE_NUMBER, 'Number'],
-      [Blockly.Msg.VARIABLES_TYPE_BOOLEAN, 'Boolean'],
+      //[Blockly.Msg.VARIABLES_TYPE_BOOLEAN, 'Boolean'],
       [Blockly.Msg.VARIABLES_TYPE_STRING, 'String'],
-      [Blockly.Msg.VARIABLES_TYPE_COLOUR, 'Colour'],
-      [Blockly.Msg.VARIABLES_TYPE_CONNECTION, 'Connection' ],
+      //[Blockly.Msg.VARIABLES_TYPE_CONNECTION, 'Connection' ],
     ],
     function(option) {
       this.sourceBlock_.updateType_(option);
@@ -873,7 +870,7 @@ Blockly.Blocks['robLists_create_with'] = {
       input.connection.setShadowDom(Blockly.Xml.blockToDom_(block, []));
     }
     // update output
-    this.changeOutput('Array_' + this.listType_);
+    this.changeOutput('List_' + this.listType_);
   },
   getNewValue : function() {
     var block;
@@ -884,7 +881,7 @@ Blockly.Blocks['robLists_create_with'] = {
     case 'String':
       block = this.workspace.newBlock('text');
       return block;
-    case 'Boolean':
+    /*case 'Boolean':
       block = this.workspace.newBlock('logic_boolean');
       return block;
     case 'Colour':
@@ -892,7 +889,7 @@ Blockly.Blocks['robLists_create_with'] = {
       return block;
     case 'Connection':
       block = this.workspace.newBlock('logic_null');
-      return block;
+      return block;*/
     }
   }
 };
@@ -916,7 +913,7 @@ Blockly.Blocks['robLists_repeat'] = {
           "check": "Number"
         }
       ],
-      "output": "Array_Number",
+      "output": "List_Number",
       "colour": Blockly.CAT_LIST_RGB,
       "tooltip": Blockly.Msg.LISTS_REPEAT_TOOLTIP,
       "helpUrl": Blockly.Msg.LISTS_REPEAT_HELPURL
@@ -931,10 +928,10 @@ Blockly.Blocks['robLists_repeat'] = {
      
     var listType = new Blockly.FieldDropdown([
       [Blockly.Msg.VARIABLES_TYPE_NUMBER, 'Number'],
-      [Blockly.Msg.VARIABLES_TYPE_BOOLEAN, 'Boolean'],
+      //[Blockly.Msg.VARIABLES_TYPE_BOOLEAN, 'Boolean'],
       [Blockly.Msg.VARIABLES_TYPE_STRING, 'String'],
-      [Blockly.Msg.VARIABLES_TYPE_COLOUR, 'Colour'],
-      [Blockly.Msg.VARIABLES_TYPE_CONNECTION, 'Connection' ],
+      /*[Blockly.Msg.VARIABLES_TYPE_COLOUR, 'Colour'],
+      [Blockly.Msg.VARIABLES_TYPE_CONNECTION, 'Connection' ],*/
     ],
     function(option) {
       this.sourceBlock_.updateType_(option);
@@ -968,7 +965,7 @@ Blockly.Blocks['robLists_repeat'] = {
     var input = this.getInput('ITEM');
     input.setCheck(option);
     // update output
-    this.changeOutput('Array_' + this.listType_);
+    this.changeOutput('List_' + this.listType_);
   }
 };
 
@@ -984,11 +981,11 @@ Blockly.Blocks['robLists_length'] = {
         {
           "type": "input_value",
           "name": "VALUE",
-          "check": ['Array_Number', 
-                   'Array_String', 
-                   'Array_Boolean', 
-                   'Array_Colour', 
-                   'Array_Connection', 
+          "check": ['List_Number', 
+                   'List_String', 
+                   'List_Boolean', 
+                   'List_Colour', 
+                   'List_Connection', 
                    ]
         }
       ],
@@ -1012,11 +1009,11 @@ Blockly.Blocks['robLists_isEmpty'] = {
         {
           "type": "input_value",
           "name": "VALUE",
-          "check": ['Array_Number', 
-                   'Array_String', 
-                   'Array_Boolean', 
-                   'Array_Colour', 
-                   'Array_Connection', 
+          "check": ['List_Number', 
+                   'List_String', 
+                   'List_Boolean', 
+                   'List_Colour', 
+                   'List_Connection', 
                    ]
         }
       ],
@@ -1041,11 +1038,11 @@ Blockly.Blocks['robLists_indexOf'] = {
     this.setColour(Blockly.CAT_LIST_RGB);
     this.setOutput(true, 'Number');
     this.appendValueInput('VALUE')
-        .setCheck(['Array_Number', 
-                   'Array_String', 
-                   'Array_Boolean', 
-                   'Array_Colour', 
-                   'Array_Connection', 
+        .setCheck(['List_Number', 
+                   'List_String', 
+                   'List_Boolean', 
+                   'List_Colour', 
+                   'List_Connection', 
                    ])
         .appendField(Blockly.Msg.LISTS_INDEX_OF_INPUT_IN_LIST);
     this.appendValueInput('FIND')
@@ -1061,7 +1058,7 @@ Blockly.Blocks['robLists_indexOf'] = {
     var blockValue = this.getInputTargetBlock('VALUE');
     var blockFind = this.getInputTargetBlock('FIND');
     if (blockValue) {
-      this.getInput('FIND').setCheck(blockValue.outputConnection.check_[0].replace('Array_',''));
+      this.getInput('FIND').setCheck(blockValue.outputConnection.check_[0].replace('List_',''));
     } else {
       this.getInput('FIND').setCheck(['Number', 
                    'String', 
@@ -1071,13 +1068,13 @@ Blockly.Blocks['robLists_indexOf'] = {
                    'String']);
     }
     if (blockFind) {
-      this.getInput('VALUE').setCheck('Array_' + blockFind.outputConnection.check_[0]);
+      this.getInput('VALUE').setCheck('List_' + blockFind.outputConnection.check_[0]);
     } else {
-      this.getInput('VALUE').setCheck(['Array_Number', 
-                   'Array_String', 
-                   'Array_Boolean', 
-                   'Array_Colour', 
-                   'Array_Connection', 
+      this.getInput('VALUE').setCheck(['List_Number', 
+                   'List_String', 
+                   'List_Boolean', 
+                   'List_Colour', 
+                   'List_Connection', 
                    ]);
     }
     this.render();
@@ -1107,11 +1104,11 @@ Blockly.Blocks['robLists_getIndex'] = {
       this.sourceBlock_.updateStatement_(isStatement);
     });
     this.appendValueInput('VALUE')
-        .setCheck(['Array_Number', 
-                   'Array_String', 
-                   'Array_Boolean', 
-                   'Array_Colour', 
-                   'Array_Connection', 
+        .setCheck(['List_Number', 
+                   'List_String', 
+                   'List_Boolean', 
+                   'List_Colour', 
+                   'List_Connection', 
                    ])
         .appendField(Blockly.Msg.LISTS_GET_INDEX_INPUT_IN_LIST);
     this.appendDummyInput()
@@ -1226,7 +1223,7 @@ Blockly.Blocks['robLists_getIndex'] = {
     }
     var blockA = this.getInputTargetBlock('VALUE');
     if (blockA) {
-      this.changeOutput(blockA.outputConnection.check_[0].replace('Array_',''));
+      this.changeOutput(blockA.outputConnection.check_[0].replace('List_',''));
     } else {
       this.changeOutput(['Number', 
                    'String', 
@@ -1257,11 +1254,11 @@ Blockly.Blocks['robLists_setIndex'] = {
     this.setHelpUrl(Blockly.Msg.LISTS_SET_INDEX_HELPURL);
     this.setColour(Blockly.CAT_LIST_RGB);
     this.appendValueInput('LIST')
-        .setCheck(['Array_Number', 
-                   'Array_String', 
-                   'Array_Boolean', 
-                   'Array_Colour', 
-                   'Array_Connection', 
+        .setCheck(['List_Number', 
+                   'List_String', 
+                   'List_Boolean', 
+                   'List_Colour', 
+                   'List_Connection', 
                    'String'])
         .appendField(Blockly.Msg.LISTS_SET_INDEX_INPUT_IN_LIST);
     this.appendDummyInput()
@@ -1351,7 +1348,7 @@ Blockly.Blocks['robLists_setIndex'] = {
     var blockList = this.getInputTargetBlock('LIST');
     var blockTo = this.getInputTargetBlock('TO');
     if (blockList) {
-      this.getInput('TO').setCheck(blockList.outputConnection.check_[0].replace('Array_',''));
+      this.getInput('TO').setCheck(blockList.outputConnection.check_[0].replace('List_',''));
     } else {
       this.getInput('TO').setCheck(['Number', 
                    'String', 
@@ -1361,13 +1358,13 @@ Blockly.Blocks['robLists_setIndex'] = {
                    'String']);
     }
     if (blockTo) {
-      this.getInput('LIST').setCheck('Array_' + blockTo.outputConnection.check_[0]);
+      this.getInput('LIST').setCheck('List_' + blockTo.outputConnection.check_[0]);
     } else {
-      this.getInput('LIST').setCheck(['Array_Number', 
-                   'Array_String', 
-                   'Array_Boolean', 
-                   'Array_Colour', 
-                   'Array_Connection', 
+      this.getInput('LIST').setCheck(['List_Number', 
+                   'List_String', 
+                   'List_Boolean', 
+                   'List_Colour', 
+                   'List_Connection', 
                    'String']);
     }
     this.render();
@@ -1391,11 +1388,11 @@ Blockly.Blocks['robLists_getSublist'] = {
     this.setHelpUrl(Blockly.Msg.LISTS_GET_SUBLIST_HELPURL);
     this.setColour(Blockly.CAT_LIST_RGB);
     this.appendValueInput('LIST')
-        .setCheck(['Array_Number', 
-                   'Array_String', 
-                   'Array_Boolean', 
-                   'Array_Colour', 
-                   'Array_Connection', 
+        .setCheck(['List_Number', 
+                   'List_String', 
+                   'List_Boolean', 
+                   'List_Colour', 
+                   'List_Connection', 
                    'String'])
         .appendField(Blockly.Msg.LISTS_GET_SUBLIST_INPUT_IN_LIST);
     this.appendDummyInput('AT1');
@@ -1405,11 +1402,11 @@ Blockly.Blocks['robLists_getSublist'] = {
           .appendField(Blockly.Msg.LISTS_GET_SUBLIST_TAIL);
     }
     this.setInputsInline(true);
-    this.setOutput(true, ['Array_Number', 
-                   'Array_String', 
-                   'Array_Boolean', 
-                   'Array_Colour', 
-                   'Array_Connection', 
+    this.setOutput(true, ['List_Number', 
+                   'List_String', 
+                   'List_Boolean', 
+                   'List_Colour', 
+                   'List_Connection', 
                    'String']);
     this.updateAt_(1, true);
     this.updateAt_(2, true);
@@ -1496,11 +1493,11 @@ Blockly.Blocks['robLists_getSublist'] = {
     if (blockList) {
       this.changeOutput(blockList.outputConnection.check_[0]);
     } else {
-      this.changeOutput(['Array_Number', 
-                   'Array_String', 
-                   'Array_Boolean', 
-                   'Array_Colour', 
-                   'Array_Connection', 
+      this.changeOutput(['List_Number', 
+                   'List_String', 
+                   'List_Boolean', 
+                   'List_Colour', 
+                   'List_Connection', 
                    'String']);
     }
     this.render();
