@@ -97,7 +97,7 @@ window.BLOCKLY_DIR = (function() {
       var match = re.exec(script.src);
       if (match) {
         return match[1];
-      }
+      }n
     }
     alert('Could not detect Blockly\\'s directory name.');
   }

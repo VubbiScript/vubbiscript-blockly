@@ -61,7 +61,7 @@ Blockly.Blocks['variables_get'] = {
   setType: function(name, type) {
     if (type !== this.dataType_) {
       this.dataType_ = type;
-      this.changeOutput(this.dataType_);
+      this.setOutput(true, this.dataType_);
     }
   },
   mutationToDom: function() {
@@ -84,7 +84,7 @@ Blockly.Blocks['variables_get'] = {
                    Blockly.Variables.getType(this.getFieldValue('VAR'));
     if (dataType && this.workspace.variableDeclaration) {
       this.dataType_ = dataType;
-      this.changeOutput(this.dataType_);
+      this.setOutput(true, this.dataType_);
     }
   },
   /**
@@ -252,10 +252,45 @@ Blockly.Blocks['unityGlobalVariables_declare'] = {
   init: function() {
     this.setHelpUrl(Blockly.Msg.VARIABLES_SET_HELPURL);
     this.setColour(Blockly.CAT_ACTIVITY_RGB);
-    var declType = new Blockly.FieldDropdown([
-      [Blockly.Msg.VARIABLES_TYPE_NUMBER, 'Number'],
-      [Blockly.Msg.VARIABLES_TYPE_BOOLEAN, 'Boolean'],
-      [Blockly.Msg.VARIABLES_TYPE_STRING, 'String'],
+    var declType;
+    if (this.workspace.device === 'calliope') {
+      declType = new Blockly.FieldDropdown([
+        [Blockly.Msg.VARIABLES_TYPE_NUMBER, 'Number'],
+        [Blockly.Msg.VARIABLES_TYPE_BOOLEAN, 'Boolean'],
+        [Blockly.Msg.VARIABLES_TYPE_STRING, 'String'],
+        [Blockly.Msg.VARIABLES_TYPE_COLOUR, 'Colour'],
+        [Blockly.Msg.VARIABLES_TYPE_IMAGE, 'Image' ],
+        [Blockly.Msg.VARIABLES_TYPE_ARRAY_NUMBER, 'Array_Number'],
+        [Blockly.Msg.VARIABLES_TYPE_ARRAY_BOOLEAN, 'Array_Boolean'],
+        [Blockly.Msg.VARIABLES_TYPE_ARRAY_STRING, 'Array_String'],
+        [Blockly.Msg.VARIABLES_TYPE_ARRAY_IMAGE, 'Array_Image' ]
+      ], function(option) {
+        if (option && this.sourceBlock_.getFieldValue('TYPE') !== option) {
+          this.sourceBlock_.updateType(option);
+          this.sourceBlock_.updateShape_(0, option);
+        } 
+      });
+    } else if (this.workspace.device === 'microbit') {
+      declType = new Blockly.FieldDropdown([
+        [Blockly.Msg.VARIABLES_TYPE_NUMBER, 'Number'],
+        [Blockly.Msg.VARIABLES_TYPE_BOOLEAN, 'Boolean'],
+        [Blockly.Msg.VARIABLES_TYPE_STRING, 'String'],
+        [Blockly.Msg.VARIABLES_TYPE_IMAGE, 'Image' ],
+        [Blockly.Msg.VARIABLES_TYPE_ARRAY_NUMBER, 'Array_Number'],
+        [Blockly.Msg.VARIABLES_TYPE_ARRAY_BOOLEAN, 'Array_Boolean'],
+        [Blockly.Msg.VARIABLES_TYPE_ARRAY_STRING, 'Array_String'],
+        [Blockly.Msg.VARIABLES_TYPE_ARRAY_IMAGE, 'Array_Image' ]
+      ], function(option) {
+          if (option && this.sourceBlock_.getFieldValue('TYPE') !== option) {
+            this.sourceBlock_.updateType(option);
+            this.sourceBlock_.updateShape_(0, option);
+          }
+        });
+    } else {
+      declType = new Blockly.FieldDropdown([
+        [Blockly.Msg.VARIABLES_TYPE_NUMBER, 'Number'],
+        [Blockly.Msg.VARIABLES_TYPE_BOOLEAN, 'Boolean'],
+        [Blockly.Msg.VARIABLES_TYPE_STRING, 'String'],
       ["GameObject", 'GameObject'],// TODO JEPE vertaal
       ["Vector3", 'Vector3'],
       ["Sprite", 'Sprite'],
@@ -265,12 +300,13 @@ Blockly.Blocks['unityGlobalVariables_declare'] = {
       //["List GameObject", 'List_GameObject'],
       //["List Vector3", 'List_Vector3'],
       //["List Sprite", 'List_Sprite']
-    ], function(option) {
-      if (option && this.sourceBlock_.getFieldValue('TYPE') !== option) {
-        this.sourceBlock_.updateType(option);
-        this.sourceBlock_.updateShape_(0, option);
-      }
-    });
+        ], function(option) {
+            if (option && this.sourceBlock_.getFieldValue('TYPE') !== option) {
+              this.sourceBlock_.updateType(option);
+              this.sourceBlock_.updateShape_(0, option);
+          }
+      });
+    }
     var name = Blockly.Variables.findLegalName(Blockly.Msg.VARIABLES_DEFAULT_NAME, this);
     this.nameOld = name;
     var nameField = new Blockly.FieldTextInput(name, this.validateName);
@@ -413,6 +449,8 @@ Blockly.Blocks['unityGlobalVariables_declare'] = {
         block = this.workspace.newBlock('unityLists_create_with');
         block.setFieldValue(option.substr(5), 'LIST_TYPE');
       } else if (option === 'GameObject' || option === 'Sprite') {
+      } else if (option === 'Image') {
+        block = this.workspace.newBlock('mbedImage_get_image');
         block = this.workspace.newBlock('logic_null');
       }
       var value = this.getInput('VALUE');
@@ -442,21 +480,55 @@ Blockly.Blocks['unityLocalVariables_declare'] = {
   init: function() {
     this.setHelpUrl(Blockly.Msg.VARIABLES_SET_HELPURL);
     this.setColour(Blockly.CAT_PROCEDURE_RGB);
-    var declType = new Blockly.FieldDropdown([
-      [Blockly.Msg.VARIABLES_TYPE_NUMBER, 'Number'],
-      [Blockly.Msg.VARIABLES_TYPE_BOOLEAN, 'Boolean'],
-      [Blockly.Msg.VARIABLES_TYPE_STRING, 'String'],
-      [Blockly.Msg.VARIABLES_TYPE_COLOUR, 'Colour'],
-      [Blockly.Msg.VARIABLES_TYPE_CONNECTION, 'Connection' ],
+    var declType;
+    if (this.workspace.device === 'calliope') {
+      declType = new Blockly.FieldDropdown([
+        [Blockly.Msg.VARIABLES_TYPE_NUMBER, 'Number'],
+        [Blockly.Msg.VARIABLES_TYPE_BOOLEAN, 'Boolean'],
+        [Blockly.Msg.VARIABLES_TYPE_STRING, 'String'],
+        [Blockly.Msg.VARIABLES_TYPE_COLOUR, 'Colour'],
+        [Blockly.Msg.VARIABLES_TYPE_IMAGE, 'Image' ],
+        [Blockly.Msg.VARIABLES_TYPE_ARRAY_NUMBER, 'Array_Number'],
+        [Blockly.Msg.VARIABLES_TYPE_ARRAY_BOOLEAN, 'Array_Boolean'],
+        [Blockly.Msg.VARIABLES_TYPE_ARRAY_STRING, 'Array_String'],
+        [Blockly.Msg.VARIABLES_TYPE_ARRAY_IMAGE, 'Array_Image' ],
+      ], function(option) {
+        if (option && this.sourceBlock_.getFieldValue('TYPE') !== option) {
+          this.sourceBlock_.updateType(option);
+        }
+      });
+    } else if (this.workspace.device === 'microbit') {
+      declType = new Blockly.FieldDropdown([
+        [Blockly.Msg.VARIABLES_TYPE_NUMBER, 'Number'],
+        [Blockly.Msg.VARIABLES_TYPE_BOOLEAN, 'Boolean'],
+        [Blockly.Msg.VARIABLES_TYPE_STRING, 'String'],
+        [Blockly.Msg.VARIABLES_TYPE_IMAGE, 'Image' ],
+        [Blockly.Msg.VARIABLES_TYPE_ARRAY_NUMBER, 'Array_Number'],
+        [Blockly.Msg.VARIABLES_TYPE_ARRAY_BOOLEAN, 'Array_Boolean'],
+        [Blockly.Msg.VARIABLES_TYPE_ARRAY_STRING, 'Array_String'],
+        [Blockly.Msg.VARIABLES_TYPE_ARRAY_IMAGE, 'Array_Image' ],
+      ], function(option) {
+          if (option && this.sourceBlock_.getFieldValue('TYPE') !== option) {
+            this.sourceBlock_.updateType(option);
+          }
+        });
+    } else {
+      declType = new Blockly.FieldDropdown([
+        [Blockly.Msg.VARIABLES_TYPE_NUMBER, 'Number'],
+        [Blockly.Msg.VARIABLES_TYPE_BOOLEAN, 'Boolean'],
+        [Blockly.Msg.VARIABLES_TYPE_STRING, 'String'],
+        [Blockly.Msg.VARIABLES_TYPE_COLOUR, 'Colour'],
+        [Blockly.Msg.VARIABLES_TYPE_CONNECTION, 'Connection' ],
       [Blockly.Msg.VARIABLES_TYPE_ARRAY_NUMBER, 'List_Number'],
       [Blockly.Msg.VARIABLES_TYPE_ARRAY_BOOLEAN, 'List_Boolean'],
       [Blockly.Msg.VARIABLES_TYPE_ARRAY_STRING, 'List_String'],
       [Blockly.Msg.VARIABLES_TYPE_ARRAY_CONNECTION, 'List_Connection']
-    ], function(option) {
-      if (option && this.sourceBlock_.getFieldValue('TYPE') !== option) {
-        this.sourceBlock_.updateType(option);
-      }
-    });
+      ], function(option) {
+          if (option && this.sourceBlock_.getFieldValue('TYPE') !== option) {
+            this.sourceBlock_.updateType(option);
+          }
+        });
+    }
     var name = Blockly.Variables.findLegalName('x', this);
     this.nameOld = name;
     var nameField = new Blockly.FieldTextInput(name, this.validateName);

@@ -89,12 +89,12 @@ Blockly.WidgetDiv.show = function(newOwner, rtl, dispose) {
  */
 Blockly.WidgetDiv.hide = function() {
   if (Blockly.WidgetDiv.owner_) {
+    Blockly.WidgetDiv.owner_ = null;
     Blockly.WidgetDiv.DIV.style.display = 'none';
     Blockly.WidgetDiv.DIV.style.left = '';
     Blockly.WidgetDiv.DIV.style.top = '';
     Blockly.WidgetDiv.DIV.style.height = '';
     Blockly.WidgetDiv.dispose_ && Blockly.WidgetDiv.dispose_();
-    Blockly.WidgetDiv.owner_ = null;
     Blockly.WidgetDiv.dispose_ = null;
     goog.dom.removeChildren(Blockly.WidgetDiv.DIV);
   }
@@ -131,8 +131,8 @@ Blockly.WidgetDiv.hideIfOwner = function(oldOwner) {
 Blockly.WidgetDiv.position = function(anchorX, anchorY, windowSize,
                                       scrollOffset, rtl) {
   // Don't let the widget go above the top edge of the window.
-  if (anchorY < scrollOffset.y) {
-    anchorY = scrollOffset.y;
+  if (anchorY < scrollOffset.y + 100) {
+    anchorY = scrollOffset.y + 100; // OpenRoberta menu height.
   }
   if (rtl) {
     // Don't let the widget go right of the right edge of the window.
@@ -148,5 +148,5 @@ Blockly.WidgetDiv.position = function(anchorX, anchorY, windowSize,
   Blockly.WidgetDiv.DIV.style.left = anchorX + 'px';
   Blockly.WidgetDiv.DIV.style.top = anchorY + 'px';
   Blockly.WidgetDiv.DIV.style.height =
-      (windowSize.height - anchorY + scrollOffset.y) + 'px';
+      (windowSize.height - anchorY + scrollOffset.y - 2) + 'px';
 };

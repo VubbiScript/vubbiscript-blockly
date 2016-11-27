@@ -50,16 +50,119 @@ Blockly.Blocks['robControls_start'] = {
 
     init : function() {
         this.setColour(Blockly.CAT_ACTIVITY_RGB);
-        this.appendDummyInput().
-             appendField(Blockly.Msg.START_PROGRAM).
-             appendField('  ').
-             appendField(new Blockly.FieldCheckbox("FALSE"), "DEBUG").
-             appendField(Blockly.Msg.START_PROGRAM_DEBUG);
+        var debug = new Blockly.FieldCheckbox("FALSE");
+        var textDebug = new Blockly.Field(Blockly.Msg.START_PROGRAM_DEBUG);
+        if (this.workspace.device === 'calliope' || this.workspace.device === 'microbit') {
+            debug.setVisible(false);
+            textDebug.setVisible(false);
+        }
+        this.appendDummyInput().appendField(Blockly.Msg.START_PROGRAM).appendField('  ').appendField(debug, "DEBUG").appendField(textDebug);
         this.declare_ = false;
         this.setPreviousStatement(false);
         this.setNextStatement(true);
         this.setDeletable(false);
-        this.setMutatorPlus(new Blockly.MutatorPlus(['robControls_start']));
+        this.setMutatorPlus(new Blockly.MutatorPlus([ 'robControls_start' ]));
+        this.setTooltip(Blockly.Msg.START_TOOLTIP);      
+    },
+    /**
+     * Create XML to represent whether a statement list of variable declarations
+     * should be present.
+     * 
+     * @return {Element} XML storage element.
+     * @this Blockly.Block
+     */
+    mutationToDom : function() {
+        if (!this.declare_ === undefined) {
+            return false;
+        }
+        var container = document.createElement('mutation');
+        container.setAttribute('declare', (this.declare_ == true));
+        return container;
+    },
+
+    /**
+     * Parse XML to restore the statement list.
+     * 
+     * @param {!Element}
+     *            xmlElement XML storage element.
+     * @this Blockly.Block
+     */
+    domToMutation : function(xmlElement) {
+        this.declare_ = (xmlElement.getAttribute('declare') != 'false');
+        if (this.declare_) {
+            this.appendStatementInput('ST');
+            this.getInput('ST').connection.setCheck('declaration_only');
+        }
+    },
+    /**
+     * Update the shape according, if declarations exists.
+     * 
+     * @param {Number}
+     *            number 1 add a variable declaration, -1 remove a variable
+     *            declaration.
+     * @this Blockly.Block
+     */
+    updateShape_ : function(num) {
+        if (num == 1) {
+            if (!this.declare_) {
+                this.appendStatementInput('ST');
+                // making sure only declarations can connect to the statement list
+                this.getInput('ST').connection.setCheck('declaration_only');
+                this.declare_ = true;
+            }
+            var vd = this.workspace.newBlock('robGlobalVariables_declare');
+            vd.initSvg();
+            vd.render();
+            var value = vd.getInput('VALUE');
+            var block = this.workspace.newBlock('math_number');
+            block.initSvg();
+            block.render();
+            value.connection.connect(block.outputConnection);
+            var connection;
+            if (this.getInput('ST').connection.targetConnection) {
+                var block = this.getInput('ST').connection.targetConnection.sourceBlock_;
+                if (block) {
+                    // look for the last variable declaration block in the sequence
+                    while (block.getNextBlock()) {
+                        block = block.getNextBlock();
+                    }
+                }
+                block.setNext(true);
+                connection = block.nextConnection;
+            } else {
+                connection = this.getInput('ST').connection;
+            }
+            connection.connect(vd.previousConnection);
+        } else if (num == -1) {
+            // if the last declaration in the stack has been removed, remove the declaration statement
+            this.removeInput('ST');
+            this.declare_ = false;
+        }
+    }
+};
+
+Blockly.Blocks['robControls_start_ardu'] = {
+    /**
+     * The starting point for the main program. This block is not deletable and
+     * it should not be available in any toolbox. This is also the block where
+     * variable declaration can be instantiated via the plus mutator. For new
+     * task see {@link Block.robControls_activity}.
+     * 
+     * @constructs robControls_start
+     * @this.Blockly.Block
+     * @returns immediately
+     * @see {@link robControls_activity}
+     * @memberof Block
+     */
+
+    init : function() {
+        this.setColour(Blockly.CAT_ACTIVITY_RGB);
+        this.appendDummyInput().appendField(Blockly.Msg.START_PROGRAM).appendField('  ').appendField(new Blockly.FieldCheckbox("FALSE"), "DEBUG").appendField(Blockly.Msg.START_PROGRAM_DEBUG);
+        this.declare_ = false;
+        this.setPreviousStatement(false);
+        this.setNextStatement(true, 'ardu');
+        this.setDeletable(false);
+        this.setMutatorPlus(new Blockly.MutatorPlus([ 'robControls_start_ardu' ]));
         this.setTooltip(Blockly.Msg.START_TOOLTIP);
     },
     /**
@@ -89,6 +192,7 @@ Blockly.Blocks['robControls_start'] = {
         this.declare_ = (xmlElement.getAttribute('declare') != 'false');
         if (this.declare_) {
             this.appendStatementInput('ST');
+            this.getInput('ST').connection.setCheck('declaration_only');
         }
     },
     /**
@@ -113,7 +217,7 @@ Blockly.Blocks['robControls_start'] = {
             var value = vd.getInput('VALUE');
             var block = this.workspace.newBlock('math_number');
             block.initSvg();
-            block.render();  
+            block.render();
             value.connection.connect(block.outputConnection);
             var connection;
             if (this.getInput('ST').connection.targetConnection) {
@@ -175,8 +279,7 @@ Blockly.Blocks['robControls_start_activity'] = {
 
     init : function() {
         this.setColour(Blockly.CAT_ACTIVITY_RGB);
-        this.appendDummyInput().appendField(Blockly.Msg.START).appendField(new Blockly.FieldTextInput(Blockly.Msg.START_ACTIVITY, Blockly.Procedures.rename),
-                'ACTIVITY');
+        this.appendDummyInput().appendField(Blockly.Msg.START).appendField(new Blockly.FieldTextInput(Blockly.Msg.START_ACTIVITY, Blockly.Procedures.rename), 'ACTIVITY');
         this.setPreviousStatement(true);
         this.setNextStatement(true);
         this.setTooltip(Blockly.Msg.START_ACTIVITY_TOOLTIP);
@@ -250,6 +353,7 @@ Blockly.Blocks['robControls_wait'] = {
      * @this Blockly.Block
      */
     updateShape_ : function(num) {
+        Blockly.dragMode_ = Blockly.DRAG_NONE;
         if (num == 1) {
             this.waitCount_++;
             if (this.waitCount_ == 1)
@@ -257,12 +361,24 @@ Blockly.Blocks['robControls_wait'] = {
             this.appendValueInput('WAIT' + this.waitCount_).appendField(Blockly.Msg.WAIT_OR).setCheck('Boolean');
             this.appendStatementInput('DO' + this.waitCount_).appendField(Blockly.Msg.CONTROLS_REPEAT_INPUT_DO);
         } else if (num == -1) {
+            var target = this.getInputTargetBlock('DO' + this.waitCount_);
+            if (target) {
+                target.unplug();
+                target.bumpNeighbours_();
+            }
+            var target = this.getInputTargetBlock('WAIT' + this.waitCount_);
+            if (target) {
+                target.unplug();
+                target.bumpNeighbours_();
+            }
             this.removeInput('DO' + this.waitCount_);
             this.removeInput('WAIT' + this.waitCount_);
             this.waitCount_--;
             if (this.waitCount_ == 0) {
                 this.removeInput('DO0');
             }
+            this.itemCount_--;
+            this.removeInput('ADD' + this.itemCount_);
         }
         if (this.waitCount_ >= 1) {
             if (this.waitCount_ == 1) {
@@ -291,12 +407,10 @@ Blockly.Blocks['robControls_wait_time'] = {
 
     init : function() {
         this.setColour(Blockly.CAT_CONTROL_RGB);
-        this.setInputsInline(true);
         this.appendValueInput('WAIT').appendField(Blockly.Msg.WAIT).setCheck('Number');
-        this.appendDummyInput().appendField('ms');
         this.setPreviousStatement(true);
         this.setNextStatement(true);
-        this.setTooltip(Blockly.Msg.WAIT_TOOLTIP);
+        this.setTooltip(Blockly.Msg.WAIT_TIME_TOOLTIP);
     }
 };
 
@@ -366,6 +480,7 @@ Blockly.Blocks['robControls_wait_for'] = {
      * @this Blockly.Block
      */
     updateShape_ : function(num) {
+        Blockly.dragMode_ = Blockly.DRAG_NONE;
         if (num == 1) {
             this.waitCount_++;
             if (this.waitCount_ == 1)
@@ -379,7 +494,12 @@ Blockly.Blocks['robControls_wait_for'] = {
             var connection = this.getInput('WAIT' + this.waitCount_).connection;
             connection.connect(lc.outputConnection);
 
-            var s = this.workspace.newBlock('robSensors_getSample');
+            var s;
+            if (this.workspace.device === 'ardu') {
+                s = this.workspace.newBlock('robSensors_getSample_ardu');
+            } else {
+                s = this.workspace.newBlock('robSensors_getSample');
+            }
             s.initSvg();
             s.render();
             connection = lc.getInput('A').connection;
@@ -391,11 +511,17 @@ Blockly.Blocks['robControls_wait_for'] = {
             connection = lc.getInput('B').connection;
             connection.connect(v.outputConnection);
         } else if (num == -1) {
-            this.removeInput('DO' + this.waitCount_);
-            var targetBlock = this.getInputTargetBlock('WAIT' + this.waitCount_);
-            if (targetBlock){
-                targetBlock.dispose();
+            var target = this.getInputTargetBlock('DO' + this.waitCount_);
+            if (target) {
+                target.unplug();
+                target.bumpNeighbours_();
             }
+            var target = this.getInputTargetBlock('WAIT' + this.waitCount_);
+            if (target) {
+                target.unplug();
+                target.bumpNeighbours_();
+            }
+            this.removeInput('DO' + this.waitCount_);
             this.removeInput('WAIT' + this.waitCount_);
             this.waitCount_--;
             if (this.waitCount_ == 0) {
@@ -424,6 +550,20 @@ Blockly.Blocks['robControls_loopForever'] = {
         // this.setInputsInline(true);
         this.setPreviousStatement(true);
         this.setNextStatement(true);
+        this.setTooltip(Blockly.Msg.LOOPFOREVER_TOOLTIP);
+    }
+};
+
+Blockly.Blocks['robControls_loopForever_ardu'] = {
+    init : function() {
+        this.setColour(Blockly.CAT_ACTIVITY_RGB);
+        var title = new Blockly.FieldLabel(Blockly.Msg.LOOP_FOREVER);
+        this.appendDummyInput().appendField(title, 'TITLE_FOREVER');
+        this.appendStatementInput('DO').appendField(Blockly.Msg.CONTROLS_REPEAT_INPUT_DO);
+        this.setPreviousStatement(true, 'ardu');
+        this.setNextStatement(false);
+        this.setDeletable(false);
+        this.setMovable(false);
         this.setTooltip(Blockly.Msg.LOOPFOREVER_TOOLTIP);
     }
 };

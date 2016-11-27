@@ -119,6 +119,13 @@ Blockly.Blocks['lists_create_with'] = {
       itemBlock = itemBlock.nextConnection &&
           itemBlock.nextConnection.targetBlock();
     }
+    // Disconnect any children that don't belong.
+    for (var i = 0; i < this.itemCount_; i++) {
+        var connection = this.getInput('ADD' + i).connection.targetConnection;
+        if (connection && connections.indexOf(connection) == -1) {
+            connection.disconnect();
+        }
+    }
     this.itemCount_ = connections.length;
     this.updateShape_();
     // Reconnect any child blocks.
@@ -640,6 +647,38 @@ Blockly.Blocks['lists_getSublist'] = {
   }
 };
 
+Blockly.Blocks['lists_sort'] = {
+    /**
+     * Block for sorting a list.
+     * 
+     * @this Blockly.Block
+     */
+    init : function() {
+        this.jsonInit({
+            "message0" : Blockly.Msg.LISTS_SORT_TITLE,
+            "args0" : [
+                    {
+                        "type" : "field_dropdown",
+                        "name" : "TYPE",
+                        "options" : [ [ Blockly.Msg.LISTS_SORT_TYPE_NUMERIC, "NUMERIC" ], [ Blockly.Msg.LISTS_SORT_TYPE_TEXT, "TEXT" ],
+                                [ Blockly.Msg.LISTS_SORT_TYPE_IGNORECASE, "IGNORE_CASE" ] ]
+                    }, {
+                        "type" : "field_dropdown",
+                        "name" : "DIRECTION",
+                        "options" : [ [ Blockly.Msg.LISTS_SORT_ORDER_ASCENDING, "1" ], [ Blockly.Msg.LISTS_SORT_ORDER_DESCENDING, "-1" ] ]
+                    }, {
+                        "type" : "input_value",
+                        "name" : "LIST",
+                        "check" : "Array"
+                    } ],
+            "output" : "Array",
+            "colour" : Blockly.Blocks.lists.HUE,
+            "tooltip" : Blockly.Msg.LISTS_SORT_TOOLTIP,
+            "helpUrl" : Blockly.Msg.LISTS_SORT_HELPURL
+        });
+    }
+};
+
 Blockly.Blocks['lists_split'] = {
   /**
    * Block for splitting text into a list, or joining a list into text.
@@ -793,7 +832,7 @@ Blockly.Blocks['unityLists_create_with'] = {
     } else {
       this.setMutatorMinus(new Blockly.MutatorMinus(this));
     }
-    this.changeOutput('List_' + this.listType_);
+    this.setOutput(true, 'List_' + this.listType_);
   },
 
   /**
@@ -836,7 +875,8 @@ Blockly.Blocks['unityLists_create_with'] = {
       this.itemCount_--;
       var target = this.getInputTargetBlock('ADD' + this.itemCount_);
       if (target) {
-        target.unplug(false, true);
+        target.unplug();
+        target.bumpNeighbours_();
       }
       this.removeInput('ADD' + this.itemCount_);
     }
@@ -863,14 +903,13 @@ Blockly.Blocks['unityLists_create_with'] = {
       var input = this.getInput('ADD' + i)
       input.setCheck(option);
       var block = this.getNewValue();
-      block.initSvg()
+      block.initSvg();
+      //block.setShadow(true);
       block.render();
-      block.setShadow(true);
       input.connection.connect(block.outputConnection);
-      input.connection.setShadowDom(Blockly.Xml.blockToDom_(block, []));
     }
     // update output
-    this.changeOutput('List_' + this.listType_);
+    this.setOutput(true, 'List_' + this.listType_);
   },
   getNewValue : function() {
     var block;
@@ -965,7 +1004,7 @@ Blockly.Blocks['robLists_repeat'] = {
     var input = this.getInput('ITEM');
     input.setCheck(option);
     // update output
-    this.changeOutput('List_' + this.listType_);
+    this.setOutput(true, 'List_' + this.listType_);
   }
 };
 
@@ -1221,18 +1260,20 @@ Blockly.Blocks['robLists_getIndex'] = {
       // Block has been deleted or is in move
       return;
     }
-    var blockA = this.getInputTargetBlock('VALUE');
-    if (blockA) {
-      this.changeOutput(blockA.outputConnection.check_[0].replace('List_',''));
-    } else {
-      this.changeOutput(['Number', 
+    if (!this.previousConnection) {
+      var blockA = this.getInputTargetBlock('VALUE');
+      if (blockA) {
+        this.setOutput(true, blockA.outputConnection.check_[0].replace('Array_',''));
+      } else {
+        this.setOutput(true, ['Number', 
                    'String', 
                    'Boolean', 
                    'Colour', 
                    'Connection', 
                    'String']);
+      }
+      this.render();
     }
-    this.render();
   }
 };
 
@@ -1491,9 +1532,9 @@ Blockly.Blocks['robLists_getSublist'] = {
     }
     var blockList = this.getInputTargetBlock('LIST');
     if (blockList) {
-      this.changeOutput(blockList.outputConnection.check_[0]);
+      this.setOutput(true, blockList.outputConnection.check_[0]);
     } else {
-      this.changeOutput(['List_Number', 
+      this.setOutput(true, ['List_Number', 
                    'List_String', 
                    'List_Boolean', 
                    'List_Colour', 
