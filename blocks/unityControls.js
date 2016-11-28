@@ -54,7 +54,7 @@ Blockly.Blocks['unityControls_classConfig'] = {
         this.setPreviousStatement(false);
         this.setNextStatement(false);
         this.setDeletable(false);
-        this.setMutatorPlus(new Blockly.MutatorPlus());// JEPE TODO MutatorPlus does not seem to care about it's first arg
+        this.setMutatorPlus(new Blockly.MutatorPlus([ 'unityControls_classConfig' ]));// JEPE TODO MutatorPlus does not seem to care about it's first arg
         this.setTooltip("Het geheugen van dit script.");// JEPE TODO Translate // Blockly.Msg.START_TOOLTIP
     },
     /**
@@ -84,6 +84,7 @@ Blockly.Blocks['unityControls_classConfig'] = {
         this.declare_ = (xmlElement.getAttribute('declare') != 'false');
         if (this.declare_) {
             this.appendStatementInput('ST');
+            this.getInput('ST').connection.setCheck('declaration_only');
         }
     },
     /**
